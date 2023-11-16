@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<div class="wrapper container mt-4">
+    <div class="sm-3">
+        
+    </div>
+    <div class="sm-4">
+        <h1>Subir Archivo Excel</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="file" class="form-label">Seleccione un archivo Excel (.xlsx):</label>
+                <input class="form-control" type="file" name="file" id="file" accept=".xlsx" required> <!-- Campo mejorado con label y required -->
+            </div>
+            
+            <div class="mb-3">
+                <input class="btn btn-primary" type="submit" value="Cargar Archivo" >
+            </div>
+        </form>
+    </div>
+    <div class="sm-3">
+        
+    </div>
+</div>
+
+{% endblock %}

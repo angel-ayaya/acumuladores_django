@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+
+<div class="container mt-4 wrapper">
+    <div class="container align-items-center">
+        <h1 >Menú Principal</h1>
+        <p>Bienvenido a Mi Aplicación</p>   
+        <a class="btn btn-primary" href="{% url 'inicio:upload_file' %}">Subir Archivo</a>
+        <a class="btn btn-primary" href="{% url 'inicio:catalogue' %}">Ir al Catálogo</a>
+    </div>
+    
+    <div class="container">
+        <div class="container">
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <form method="GET" action="{% url 'inicio:inicio' %}">
+                        <input type="text" name="search" placeholder="Buscar por ClaveAcumulador" value="{{ request.GET.search }}">
+                        <button type="submit">Buscar</button>
+                    </form>
+                </div>
+            </div>
+            <div class="row mt-4">
+                
+                <div class="">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Placas</th>
+                                    <th>Marca</th>
+                                    <th>SubMarca</th>
+                                    <th>SerieChasis</th>
+                                    <th>Area</th>
+                                    <th>ClaveAcumulador</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vehiculo in vehiculos %}
+                                <tr>
+                                    <td>{{ vehiculo.Placas }}</td>
+                                    <td>{{ vehiculo.Marca }}</td>
+                                    <td>{{ vehiculo.SubMarca }}</td>
+                                    <td>{{ vehiculo.SerieChasis }}</td>
+                                    <td>{{ vehiculo.Area }}</td>
+                                    <td>{{ vehiculo.ClaveAcumulador }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

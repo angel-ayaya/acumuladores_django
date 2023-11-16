@@ -1,0 +1,26 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg">
+    <div class="container d-flex justify-content-between">
+        <!-- Logo a la izquierda -->
+        <a class="navbar-brand" href="/">
+            <img src="{% static 'logo.png' %}" alt="logo" height="85">
+        </a>
+
+        <!-- Botón de alternancia para pantallas pequeñas -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Elementos de navegación -->
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'inicio:upload_file' %}">Subir Archivo</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'inicio:catalogue' %}">Ver QR's</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
