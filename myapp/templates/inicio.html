@@ -5,19 +5,35 @@
 
 <div class="container mt-4 wrapper">
     <div class="container align-items-center">
-        <h1 >Menú Principal</h1>
+        <h1>Lista</h1>
         <p>Bienvenido a Mi Aplicación</p>   
-        <a class="btn btn-primary" href="{% url 'inicio:upload_file' %}">Subir Archivo</a>
-        <a class="btn btn-primary" href="{% url 'inicio:catalogue' %}">Ir al Catálogo</a>
+        <!-- <a class="btn btn-primary" href="{% url 'inicio:upload_file' %}">Subir Archivo</a>
+        <a class="btn btn-primary" href="{% url 'inicio:catalogue' %}">Ir al Catálogo</a> -->
     </div>
     
     <div class="container">
         <div class="container">
             <div class="row mt-4">
                 <div class="col-md-12">
-                    <form method="GET" action="{% url 'inicio:inicio' %}">
-                        <input type="text" name="search" placeholder="Buscar por ClaveAcumulador" value="{{ request.GET.search }}">
-                        <button type="submit">Buscar</button>
+                    <form method="GET" action="{% url 'inicio:inicio' %}" class="row g-3 align-items-center">
+                        <div class="col-auto">
+                            <input class="form-control" type="text" name="search" placeholder="Buscar" value="{{ request.GET.search }}">
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-dark">Buscar</button>
+                        </div>
+                        <div class="col-auto">
+                            <select name="filter" class="form-select">
+                                <option value="" {% if request.GET.filter == "" %}selected{% endif %}>Todos</option>
+                                <option value="placas" {% if request.GET.filter == "placas" %}selected{% endif %}>Placas</option>
+                                <option value="marca" {% if request.GET.filter == "marca" %}selected{% endif %}>Marca</option>
+                                <option value="submarca" {% if request.GET.filter == "submarca" %}selected{% endif %}>Submarca</option>
+                                <option value="seriechasis" {% if request.GET.filter == "seriechasis" %}selected{% endif %}>SerieChasis</option>
+                                <option value="area" {% if request.GET.filter == "area" %}selected{% endif %}>Area</option>
+                                <option value="claveacumulador" {% if request.GET.filter == "claveacumulador" %}selected{% endif %}>Clave Acumulador</option>
+                            </select>   
+                        </div>                     
+                        
                     </form>
                 </div>
             </div>
@@ -28,9 +44,15 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Placas</th>
-                                    <th>Marca</th>
-                                    <th>SubMarca</th>
+                                    <th>
+                                        Placas
+                                    </th>
+                                    <th>
+                                        Marca
+                                    </th>
+                                    <th>
+                                        Submarca
+                                    </th>
                                     <th>SerieChasis</th>
                                     <th>Area</th>
                                     <th>ClaveAcumulador</th>
@@ -45,6 +67,7 @@
                                     <td>{{ vehiculo.SerieChasis }}</td>
                                     <td>{{ vehiculo.Area }}</td>
                                     <td>{{ vehiculo.ClaveAcumulador }}</td>
+                                    <td><a href="{% url 'inicio:editar_vehiculo' vehiculo.id %}" class="btn btn-primary">Editar</a></td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

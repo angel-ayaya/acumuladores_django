@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 # from django.core.files.storage import FileSystemStorage
 from myapp.models import Vehiculo
+from .forms import VehiculoForm
 
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -25,18 +26,43 @@ from io import BytesIO
 
 def inicio(request):
 
-    search_term = request.GET.get('search', '')  # Obtiene el término de búsqueda del query string
+    search_term = request.GET.get('search', '')
+    filter_type = request.GET.get('filter', 'claveacumulador')
+
     vehiculos = Vehiculo.objects.all()
-      
+
     if search_term:
-        vehiculos = vehiculos.filter(ClaveAcumulador__icontains=search_term)
-    
+        if filter_type == 'placas':
+            vehiculos = vehiculos.filter(Placas__icontains=search_term)
+        elif filter_type == 'marca':
+            vehiculos = vehiculos.filter(Marca__icontains=search_term)
+        elif filter_type == 'submarca':
+            vehiculos = vehiculos.filter(SubMarca__icontains=search_term)
+        elif filter_type == 'seriechasis':
+            vehiculos = vehiculos.filter(SerieChasis__icontains=search_term)
+        elif filter_type == 'area':
+            vehiculos = vehiculos.filter(Area__icontains=search_term)
+        elif filter_type == 'claveacumulador':
+            vehiculos = vehiculos.filter(ClaveAcumulador__icontains=search_term)
+        elif filter_type == '':
+            pass
+
     ctx = {
         'vehiculos': vehiculos
         }
     
     return render(request, "inicio.html", ctx)
 
+def editar_vehiculo(request, pk):
+    vehiculo = get_object_or_404(Vehiculo, pk=pk)
+    if request.method == 'POST':
+        form = VehiculoForm(request.POST, instance=vehiculo)
+        if form.is_valid():
+            form.save()
+            return redirect('inicio:inicio')
+    else:
+        form = VehiculoForm(instance=vehiculo)
+    return render(request, 'editar_vehiculo.html', {'form': form})
 
 def upload_file(request):
      # Obtener todas las claves acumuladoras existentes en la base de datos
