@@ -135,6 +135,8 @@ def get_data_from_db():
 
 def generar_qr(pdf_filename, id_acumulador):
     qrs_path = os.path.join(settings.MEDIA_ROOT, 'public/qrs')  # Ruta donde se guardarán los PDFs
+    font_path = os.path.join(settings.BASE_DIR, 'myapp/static', 'fonts', 'bahnschrift.ttf')
+    print("Ruta de la fuente:", font_path)
 
     # Logo gobierno
     nombre_imagen = "logo.jpg"
@@ -161,7 +163,7 @@ def generar_qr(pdf_filename, id_acumulador):
     )
     
     # taking url or text
-    url = f'http://127.0.0.1:8000/media/public/{pdf_filename}'
+    url = f'https://8000-angelayaya-acumuladores-66sthvksj5f.ws-us106.gitpod.io//media/public/{pdf_filename}'
 
     # adding URL or text to QRcode
     QRcode.add_data(url)
@@ -192,8 +194,11 @@ def generar_qr(pdf_filename, id_acumulador):
     draw = ImageDraw.Draw(QRimg)
 
 
+    # Verificar si el archivo existe
+    if not os.path.exists(font_path):
+        raise Exception(f"El archivo de fuente no existe en {font_path}")
     # Define la fuente y el tamaño del texto
-    font = ImageFont.truetype("bahnschrift.ttf", 24)  # Puedes ajustar la fuente y el tamaño según tus preferencias
+    font = ImageFont.truetype(font_path, 24)  # Puedes ajustar la fuente y el tamaño según tus preferencias
 
     # Calcula el largo de texto en pixeles
     
