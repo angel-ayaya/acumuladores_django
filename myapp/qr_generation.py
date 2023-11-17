@@ -131,9 +131,7 @@ def get_data_from_db():
         print(f"Se ha creado el archivo PDF en formato horizontal: {pdf_filename}")
 
 
-    
-
-def generar_qr(pdf_filename, id_acumulador):
+def qr_generator(pdf_filename, id_acumulador):    
     qrs_path = os.path.join(settings.MEDIA_ROOT, 'public/qrs')  # Ruta donde se guardarán los PDFs
 
     # Logo gobierno
@@ -218,4 +216,16 @@ def generar_qr(pdf_filename, id_acumulador):
 
     # No olvides cerrar el objeto BytesIO
     qr_io.close()
-    print('QR code generated!')
+
+
+def generar_qr(pdf_filename, id_acumulador):
+    try:
+        qr_object = QR.objects.get(ClaveAcumulador=id_acumulador)
+        if qr_object:
+            print(qr_object.ClaveAcumulador)
+        
+        else:
+            qr_generator(pdf_filename, id_acumulador)
+            
+    except QR.DoesNotExist:
+        qr_generator(pdf_filename, id_acumulador)

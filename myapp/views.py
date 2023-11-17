@@ -16,7 +16,6 @@ from . import qr_generation as qr
 
 import pandas as pd
 from .models import Vehiculo, QR
-from .forms import QrForm
 
 # ======================================================
 # Descargar imágenes QR masivamente
@@ -68,34 +67,46 @@ def upload_file(request):
      # Obtener todas las claves acumuladoras existentes en la base de datos
     claves_acumuladoras_exist = list(Vehiculo.objects.values_list('ClaveAcumulador', flat=True))
 
-    if request.method == 'POST' and request.FILES['file']:
-        uploaded_file = request.FILES['file']
-        df = pd.read_excel(uploaded_file)
+    try:
+        if request.method == 'POST' and request.FILES['file']:
+            uploaded_file = request.FILES['file']
+            df = pd.read_excel(uploaded_file)
 
-        for index, row in df.iterrows():
-            clave_acumulador = row["CLAVE ACUMULADOR"]
-            placa = row["Placas"]
-            if not pd.isnull(clave_acumulador):
-                if clave_acumulador in claves_acumuladoras_exist:
-                    print(f"La clave acumuladora {clave_acumulador} ya existe en la base de datos.")
-                    print(f"El coche con placa {placa} no se ha guardado debido a una duplicación de clave acumuladora.")
-                else:
-                    claves_acumuladoras_exist.append(clave_acumulador)
-                    coche = Vehiculo(
-                        Placas=row["Placas"],
-                        Marca=row["Marca"],
-                        SubMarca=row["Sub-Marca"],
-                        SerieChasis=row["Serie Chasis"],
-                        Area=row["Area"],
-                        ClaveAcumulador=row["CLAVE ACUMULADOR"]
-                    )
-                    coche.save()
+            for index, row in df.iterrows():
+                clave_acumulador = row["CLAVE ACUMULADOR"]
+                placa = row["Placas"]
+                if not pd.isnull(clave_acumulador):
+                    if clave_acumulador in claves_acumuladoras_exist:
+                        print(f"La clave acumuladora {clave_acumulador} ya existe en la base de datos.")
+                        print(f"El coche con placa {placa} no se ha guardado debido a una duplicación de clave acumuladora.")
+                    else:
+                        claves_acumuladoras_exist.append(clave_acumulador)
+                        coche = Vehiculo(
+                            Placas=row["Placas"],
+                            Marca=row["Marca"],
+                            SubMarca=row["Sub-Marca"],
+                            SerieChasis=row["Serie Chasis"],
+                            Area=row["Area"],
+                            ClaveAcumulador=row["CLAVE ACUMULADOR"]
+                        )
+                        coche.save()
+    except Exception as e:
+        print(e)
+        print("No se ha podido guardar el archivo.")
+        return redirect('inicio:upload_file')
     
     return render(request, 'upload.html')
 
 def catalogue(request):
+
+    search_term = request.GET.get('search', '')
+
     codigos_qr = QR.objects.all()
 
+    if search_term:
+        codigos_qr = QR.objects.filter(ClaveAcumulador__icontains=search_term)
+    
+    
     
     context = {'codigos_qr': codigos_qr}
 
@@ -103,6 +114,7 @@ def catalogue(request):
 
 def execute_code(request):
     qr.get_data_from_db()
+
     return redirect('/catalogue')
 
 def descargar_imagenes_qr(request):
@@ -127,16 +139,6 @@ def descargar_imagenes_qr(request):
 
     return response
 
-def generate_pdf():
-    pass
-
-def navbar(request):
-    return render(request, 'navbar.html')
-
-def search(request):
-    #return an url in another tab
-    # url = 
-    return redirect('/catalogue')
 
 def test(request):
     search_term = request.GET.get('search', '')  # Obtiene el término de búsqueda del query string

@@ -3,38 +3,23 @@
 {% block content %}
 
 
-<div class="wrapper">
-    <div class="container">
-        <div class="row text-center">
-            <h1 >Códigos QR</h1>
-    
-            <div class="col">
-                <form method="post" action="{% url 'inicio:execute_code' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-primary">Generar QRs</button>
-                </form>
+<div class="container wrapper mt-4">
+    <div class="container mt-4">
+        <div class="row mt-4">
+            <div class="mt-4">
+                <h1 >Códigos QR</h1>
             </div>
-            <div class="col">
-                <form action="{% url 'inicio:descargar_qrs' %}">
-                    <button type="submit" class="btn btn-primary" >Descargar QRs</button>
-                </form>
+            <div class="mt-4">
+                <h2>Lista de QR's</h2>
             </div>
-        
-        <h2>Lista de QR</h2>
-        <h1>Imágenes</h1>
-    
         </div>
     </div>
-    
-    <!-- <div class="container">
-        <form class="d-flex" role="search" action="">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-          </form>
-    </div>
-     -->
-    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        function mostrarSpinner() {
+            document.getElementById('spinner').style.display = 'block';
+        }
+
         function downloadImg(rutaImagen) {
             // Crear un enlace temporal para la descarga
            
@@ -49,16 +34,58 @@
             document.body.removeChild(link);
         }
     </script>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col">
+                <form method="GET" action="{% url 'inicio:catalogue' %}" class="row g-4 align-items-center">
+                    <div class="col-auto">
+                        <input class="form-control" type="text" name="search" placeholder="Buscar" value="{{ request.GET.search }}">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-dark">Buscar</button>
+                    </div>
+                    <div class="col-auto">
+                        <a href="{% url 'inicio:catalogue' %}" class="btn btn-outline-secondary">Limpiar</a>
+                    </div>
+                </form>
+            </div>
+            <div class="col">
+                    <div class="row">
+                        <div class="col-auto">
+                            <form action="{% url 'inicio:execute_code' %}" onclick="mostrarSpinner()">
+                                <button class="btn btn-primary" >Generar QRs</button>
+                            </form>
+                        </div>
+                        
+                        <div class="col-auto">
+                            <form action="{% url 'inicio:descargar_qrs' %}">
+                                <button class="btn btn-primary" >Descargar QRs</button>
+                            </form>
+                        </div>
+                        <div class="col">
+                            <!-- Spinner inicialmente oculto -->
+                            <div id="spinner" class="spinner-border text-dark" role="status" style="display: none;">
+                            </div>
+                        </div>
+                    </div>      
+            </div>
+        </div>
+        
+    </div>
     
-    <div class="container">
+
+
+    <div class="container mt-4">
         <div class="row row-cols-1 row-cols-md-3 g-4">
             {% for qr in codigos_qr %}
                 <div class="col">
                     <div class="card h-100 text-center">
-                        <img src="{{ qr.QR.url }}" class="card-img-top img-fluid">
+                        <a href="{{ qr.QR.url }}" target="_blank">
+                            <img src="{{ qr.QR.url }}" class="card-img-top img-fluid border-bottom border-2">
+                        </a>
                         <div class="card-body">
                             <h5 class="card-title">{{ qr.ClaveAcumulador }}</h5>
-                            <button type="button" class="btn btn-light rounded-0 btn-sm" onclick="downloadImg('{{ qr.QR.url }}')">Descargar</button>
+                            <button type="button" class="btn btn-outline-dark" onclick="downloadImg('{{ qr.QR.url }}')">Descargar</button>
                         </div>
                     </div>
                 </div>

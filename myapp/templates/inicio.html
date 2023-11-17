@@ -6,7 +6,7 @@
 <div class="container mt-4 wrapper">
     <div class="container align-items-center">
         <h1>Lista</h1>
-        <p>Bienvenido a Mi Aplicación</p>   
+        <p>Vehículos registrados</p>   
         <!-- <a class="btn btn-primary" href="{% url 'inicio:upload_file' %}">Subir Archivo</a>
         <a class="btn btn-primary" href="{% url 'inicio:catalogue' %}">Ir al Catálogo</a> -->
     </div>
@@ -21,6 +21,9 @@
                         </div>
                         <div class="col-auto">
                             <button type="submit" class="btn btn-dark">Buscar</button>
+                        </div>
+                        <div class="col-auto">
+                            <a href="{% url 'inicio:inicio' %}" class="btn btn-outline-secondary">Limpiar</a>
                         </div>
                         <div class="col-auto">
                             <select name="filter" class="form-select">
@@ -38,7 +41,6 @@
                 </div>
             </div>
             <div class="row mt-4">
-                
                 <div class="">
                     <div class="table-responsive">
                         <table class="table table-striped">

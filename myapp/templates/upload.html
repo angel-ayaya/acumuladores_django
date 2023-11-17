@@ -3,26 +3,36 @@
 {% block content %}
 
 <div class="wrapper container mt-4">
-    <div class="sm-3">
+    <class class="row">
+        <div class="col">
         
-    </div>
-    <div class="sm-4">
-        <h1>Subir Archivo Excel</h1>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="file" class="form-label">Seleccione un archivo Excel (.xlsx):</label>
-                <input class="form-control" type="file" name="file" id="file" accept=".xlsx" required> <!-- Campo mejorado con label y required -->
-            </div>
+        </div>
+        <div class="col-sm-8 col-lg-6">
+            <h1>Subir Archivo Excel</h1>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mt-4 mb-3">
+                    <label for="file" class="form-label">Seleccione un archivo Excel (.xlsx):</label>
+                    <input class="form-control" type="file" name="file" id="file" accept=".xlsx" required> <!-- Campo mejorado con label y required -->
+                </div>
+                
+                <div class="mt-4 mb-3">
+                    <input class="btn btn-primary" type="submit" value="Cargar Archivo" >
+                </div>
+            </form>
+        </div>
+        <div class="col">
             
-            <div class="mb-3">
-                <input class="btn btn-primary" type="submit" value="Cargar Archivo" >
-            </div>
-        </form>
-    </div>
-    <div class="sm-3">
-        
-    </div>
+        </div>
+    </class>
 </div>
 
 {% endblock %}
+<!-- 
+Breakpoint	Class infix	Dimensions
+Extra small	None	<576px
+Small	sm	≥576px
+Medium	md	≥768px
+Large	lg	≥992px
+Extra large	xl	≥1200px
+Extra extra large	xxl	≥1400px -->

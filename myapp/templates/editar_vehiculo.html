@@ -1,32 +1,27 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<!-- <div class="container">
-    <h2>Editar Vehículo</h2>
-    <table>
-        <form class="" method="post">
-            {% csrf_token %}
-            <div class="row">
-                {{ form.as_table }}
-            </div>
-            
-        </form>
-    </table>
-    <div class="row">
-        <div class="col">
-            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-        </div>
-    </div>
-</div> -->
 
-<div class="container">
-    <h2>Editar Vehículo</h2>
-    <div class="form-group">
-        <form class="" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-        </form>
+<div class="container mt-4 wrapper">
+    <div class="row text-center mt-4">
+        <h2>Editar Vehículo</h2>
+    </div>
+    <div class="row mt-4">
+        <div class="col"></div>
+        <div class="form-group col border rounded">
+            <div class="row mt-4"></div>
+            <div class="row">
+                <form class="" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+            <div class="row mt-4"></div>
+        </div>
+        <div class="col"></div>
     </div>
     
 
