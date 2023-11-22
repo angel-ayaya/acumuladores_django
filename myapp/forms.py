@@ -15,7 +15,8 @@ class VehiculoForm(forms.ModelForm):
             'SubMarca': forms.TextInput(attrs={'class':'form-control'}),
             'SerieChasis': forms.TextInput(attrs={'class':'form-control'}),
             'Area': forms.TextInput(attrs={'class':'form-control'}),
-            'ClaveAcumulador': forms.TextInput(attrs={'class':'form-control', 'disabled': ''}),
+            'ClaveAcumulador': forms.TextInput(attrs={'class':'form-control', }),
+            # add 'disabled': '' to the attrs dict if you don't want the field editable
         }
 
         
