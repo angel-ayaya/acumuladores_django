@@ -1,29 +1,28 @@
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
-# from django.core.files.storage import FileSystemStorage
-from myapp.models import Vehiculo
-from .forms import VehiculoForm
-
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-import os
-
-from django.conf import settings
-from django.templatetags.static import static
-
-from . import qr_generation as qr
-
-import pandas as pd
-from .models import Vehiculo, QR
-
+"""Vistas de la aplicación myapp."""
 # ======================================================
-# Descargar imágenes QR masivamente
+# Python Libraries
+# ======================================================
+import os
 import zipfile
 from io import BytesIO
+
 # ======================================================
+# Django Libraries
+# ======================================================
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
+from django.conf import settings
+
+# ======================================================
+# Miscelaneous Libraries
+# ======================================================
+import pandas as pd
+from . import qr_generation as qr
+from .models import Vehiculo, QR
+from .forms import VehiculoForm
 
 def inicio(request):
+    """Vista de inicio"""
 
     search_term = request.GET.get('search', '')
     filter_type = request.GET.get('filter', 'claveacumulador')
@@ -49,10 +48,11 @@ def inicio(request):
     ctx = {
         'vehiculos': vehiculos
         }
-    
+
     return render(request, "inicio.html", ctx)
 
 def editar_vehiculo(request, pk):
+    """Vista para editar un vehículo"""
     vehiculo = get_object_or_404(Vehiculo, pk=pk)
     if request.method == 'POST':
         form = VehiculoForm(request.POST, instance=vehiculo)
@@ -64,6 +64,7 @@ def editar_vehiculo(request, pk):
     return render(request, 'editar_vehiculo.html', {'form': form})
 
 def upload_file(request):
+    """Vista para subir un archivo de Excel con los datos de los vehículos"""
      # Obtener todas las claves acumuladoras existentes en la base de datos
     claves_acumuladoras_exist = list(Vehiculo.objects.values_list('ClaveAcumulador', flat=True))
 
@@ -72,7 +73,7 @@ def upload_file(request):
             uploaded_file = request.FILES['file']
             df = pd.read_excel(uploaded_file)
 
-            for index, row in df.iterrows():
+            for row in df.iterrows():
                 clave_acumulador = row["CLAVE ACUMULADOR"]
                 placa = row["Placas"]
                 if not pd.isnull(clave_acumulador):
@@ -90,34 +91,32 @@ def upload_file(request):
                             ClaveAcumulador=row["CLAVE ACUMULADOR"]
                         )
                         coche.save()
-    except Exception as e:
-        print(e)
+    except FileNotFoundError:
         print("No se ha podido guardar el archivo.")
         return redirect('inicio:upload_file')
-    
+
     return render(request, 'upload.html')
 
 def catalogue(request):
-
+    """Vista para mostrar el catálogo de códigos QR"""
     search_term = request.GET.get('search', '')
 
     codigos_qr = QR.objects.all()
 
     if search_term:
         codigos_qr = QR.objects.filter(ClaveAcumulador__icontains=search_term)
-    
-    
-    
     context = {'codigos_qr': codigos_qr}
 
     return render(request, 'catalogue.html', context)
 
 def execute_code(request):
+    """Vista para ejecutar el código de generación de códigos QR"""
     qr.get_data_from_db()
 
     return redirect('/catalogue')
 
 def descargar_imagenes_qr(request):
+    """Vista para descargar las imágenes QR en un archivo ZIP"""
     # Directorio donde se encuentran las imágenes
     dir_imagenes = os.path.join(settings.MEDIA_ROOT, 'public', 'qrs')
 
@@ -126,7 +125,8 @@ def descargar_imagenes_qr(request):
 
     with zipfile.ZipFile(buffer, 'w') as zip_file:
         for filename in os.listdir(dir_imagenes):
-            if filename.endswith('.png'):  # Asegúrate de ajustar la extensión de archivo si es necesario
+            # Asegúrate de ajustar la extensión de archivo si es necesario
+            if filename.endswith('.png'):
                 filepath = os.path.join(dir_imagenes, filename)
                 zip_file.write(filepath, filename)
 
@@ -141,16 +141,17 @@ def descargar_imagenes_qr(request):
 
 
 def test(request):
+    """Vista para probar cosas"""
     search_term = request.GET.get('search', '')  # Obtiene el término de búsqueda del query string
     vehiculos = Vehiculo.objects.all()
     codigos_qr = QR.objects.all()
-      
+
     if search_term:
         vehiculos = vehiculos.filter(ClaveAcumulador__icontains=search_term)
-    
+
     ctx = {
         'vehiculos': vehiculos,
         'codigos_qr': codigos_qr
         }
-    
+
     return render(request, 'test.html', ctx)
