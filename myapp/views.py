@@ -55,6 +55,12 @@ def inicio(request):
 
     return render(request, "inicio.html", ctx)
 
+def inicio_redirect(request):
+    if request.user.is_authenticated:
+        return render(request, "inicio.html")  # La página de inicio para usuarios autenticados
+    else:
+        return redirect('inicio:login')  # Redirige a los usuarios no autenticados al login
+
 @login_required
 def editar_vehiculo(request, pk):
     """Vista para editar un vehículo"""
@@ -154,6 +160,8 @@ def descargar_imagenes_qr(request):
     response['Content-Disposition'] = 'attachment; filename="imagenes_qr.zip"'
 
     return response
+
+
 
 
 def test(request):

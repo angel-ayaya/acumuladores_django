@@ -3,9 +3,9 @@
 {% block content %}
 
 <div class="wrapper container mt-4">
-    <class class="row">
+    <div class="row">
         <div class="col">
-        
+            <!-- Espacio vacío o contenido adicional -->
         </div>
         <div class="col-sm-8 col-lg-6">
             <h1>Subir Archivo Excel</h1>
@@ -13,21 +13,23 @@
                 {% csrf_token %}
                 <div class="mt-4 mb-3">
                     <label for="file" class="form-label">Seleccione un archivo Excel (.xlsx):</label>
-                    <input class="form-control" type="file" name="file" id="file" accept=".xlsx" required> <!-- Campo mejorado con label y required -->
+                    <input class="form-control" type="file" name="file" id="file" accept=".xlsx" required>
                 </div>
-                
                 <div class="mt-4 mb-3">
-                    <input class="btn btn-primary" type="submit" value="Cargar Archivo" >
+                    <input class="btn btn-primary" type="submit" value="Cargar Archivo">
                 </div>
             </form>
+            <!-- Botón para descargar el template -->
+            <a href="{% url 'inicio:descargar_template' %}" class="btn btn-secondary mt-3">Descargar Plantilla de Acumuladores</a>
         </div>
         <div class="col">
-            
+            <!-- Espacio vacío o contenido adicional -->
         </div>
-    </class>
+    </div>
 </div>
 
 {% endblock %}
+
 <!-- 
 Breakpoint	Class infix	Dimensions
 Extra small	None	<576px
