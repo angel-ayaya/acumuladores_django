@@ -1,0 +1,36 @@
+
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<div class="wrapper container mt-4">
+    <div class="row">
+        <div class="col">
+            <!-- Espacio vacío o puedes añadir contenido adicional si lo deseas -->
+        </div>
+        <div class="col-sm-8 col-lg-6">
+            <h1>Iniciar Sesión</h1>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mt-4 mb-3">
+                    <label for="id_username" class="form-label">Nombre de usuario:</label>
+                    <input class="form-control" type="text" name="username" id="id_username" required>
+                </div>
+
+                <div class="mt-4 mb-3">
+                    <label for="id_password" class="form-label">Contraseña:</label>
+                    <input class="form-control" type="password" name="password" id="id_password" required>
+                </div>
+
+                <div class="mt-4 mb-3">
+                    <input class="btn btn-primary" type="submit" value="Iniciar Sesión">
+                </div>
+            </form>
+        </div>
+        <div class="col">
+            <!-- Espacio vacío o puedes añadir contenido adicional si lo deseas -->
+        </div>
+    </div>
+</div>
+
+{% endblock %}

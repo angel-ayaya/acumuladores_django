@@ -20,6 +20,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'inicio:catalogue' %}">Ver QR's</a>
                 </li>
+                {% if user.is_authenticated %}
+                    <!-- Botón de Cierre de Sesión -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'inicio:logout' %}">Cerrar Sesión</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>

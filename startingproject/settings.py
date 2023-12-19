@@ -53,6 +53,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+
 ]
 
 ROOT_URLCONF = 'startingproject.urls'
@@ -128,3 +130,19 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+LOGIN_URL = 'inicio:login'
+
+
+LOGIN_REDIRECT_URL = '/'
+# ==================================================================
+# Tiempo de expiración de la sesión en segundos (ejemplo: 30 minutos)
+SESSION_COOKIE_AGE = 1800  
+
+# La sesión expirará cuando el usuario cierre el navegador
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+# La sesión se actualizará en cada solicitud del usuario
+SESSION_SAVE_EVERY_REQUEST = True
+

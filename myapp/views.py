@@ -12,6 +12,9 @@ from io import BytesIO
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
 
 # ======================================================
 # Miscelaneous Libraries
@@ -21,6 +24,7 @@ from . import qr_generation as qr
 from .models import Vehiculo, QR
 from .forms import VehiculoForm
 
+@login_required
 def inicio(request):
     """Vista de inicio"""
 
@@ -51,6 +55,7 @@ def inicio(request):
 
     return render(request, "inicio.html", ctx)
 
+@login_required
 def editar_vehiculo(request, pk):
     """Vista para editar un vehículo"""
     vehiculo = get_object_or_404(Vehiculo, pk=pk)
@@ -63,40 +68,49 @@ def editar_vehiculo(request, pk):
         form = VehiculoForm(instance=vehiculo)
     return render(request, 'editar_vehiculo.html', {'form': form})
 
+@login_required
 def upload_file(request):
     """Vista para subir un archivo de Excel con los datos de los vehículos"""
-     # Obtener todas las claves acumuladoras existentes en la base de datos
     claves_acumuladoras_exist = list(Vehiculo.objects.values_list('ClaveAcumulador', flat=True))
-
-    try:
-        if request.method == 'POST' and request.FILES['file']:
-            uploaded_file = request.FILES['file']
+    
+    if request.method == 'POST' and request.FILES.get('file', None):
+        uploaded_file = request.FILES['file']
+        try:
             df = pd.read_excel(uploaded_file)
 
-            for row in df.iterrows():
+            # Verificar si las columnas necesarias están en el archivo
+            expected_columns = ['CLAVE ACUMULADOR', 'Placas', 'Marca', 'Sub-Marca', 'Serie Chasis', 'Area']
+            if not all(column in df.columns for column in expected_columns):
+                raise ValueError("El formato del archivo no es correcto.")
+
+            for _, row in df.iterrows():
                 clave_acumulador = row["CLAVE ACUMULADOR"]
                 placa = row["Placas"]
-                if not pd.isnull(clave_acumulador):
-                    if clave_acumulador in claves_acumuladoras_exist:
-                        print(f"La clave acumuladora {clave_acumulador} ya existe en la base de datos.")
-                        print(f"El coche con placa {placa} no se ha guardado debido a una duplicación de clave acumuladora.")
-                    else:
-                        claves_acumuladoras_exist.append(clave_acumulador)
-                        coche = Vehiculo(
-                            Placas=row["Placas"],
-                            Marca=row["Marca"],
-                            SubMarca=row["Sub-Marca"],
-                            SerieChasis=row["Serie Chasis"],
-                            Area=row["Area"],
-                            ClaveAcumulador=row["CLAVE ACUMULADOR"]
-                        )
-                        coche.save()
-    except FileNotFoundError:
-        print("No se ha podido guardar el archivo.")
-        return redirect('inicio:upload_file')
+                if pd.notnull(clave_acumulador) and clave_acumulador not in claves_acumuladoras_exist:
+                    claves_acumuladoras_exist.append(clave_acumulador)
+                    coche = Vehiculo(
+                        Placas=row["Placas"],
+                        Marca=row["Marca"],
+                        SubMarca=row["Sub-Marca"],
+                        SerieChasis=row["Serie Chasis"],
+                        Area=row["Area"],
+                        ClaveAcumulador=row["CLAVE ACUMULADOR"]
+                    )
+                    coche.save()
+                else:
+                    messages.warning(request, f"Clave acumuladora {clave_acumulador} duplicada. El vehículo con placa {placa} no se guardó.")
+
+        except ValueError as e:
+            messages.error(request, str(e))
+            print(e)
+        except Exception as e:
+            messages.error(request, "Error al procesar el archivo: " + str(e))
+            print(e)
+
 
     return render(request, 'upload.html')
 
+@login_required
 def catalogue(request):
     """Vista para mostrar el catálogo de códigos QR"""
     search_term = request.GET.get('search', '')
@@ -109,12 +123,14 @@ def catalogue(request):
 
     return render(request, 'catalogue.html', context)
 
+@login_required
 def execute_code(request):
     """Vista para ejecutar el código de generación de códigos QR"""
     qr.get_data_from_db()
 
     return redirect('/catalogue')
 
+@login_required
 def descargar_imagenes_qr(request):
     """Vista para descargar las imágenes QR en un archivo ZIP"""
     # Directorio donde se encuentran las imágenes
@@ -155,3 +171,4 @@ def test(request):
         }
 
     return render(request, 'test.html', ctx)
+
