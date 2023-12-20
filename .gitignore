@@ -152,3 +152,4 @@ myapp/__pycache__/views.cpython-311.pyc
 myapp/__pycache__/urls.cpython-311.pyc
 myapp/__pycache__/qr_generation.cpython-311.pyc
 myapp/__pycache__/apps.cpython-311.pyc
+db.sqlite3
