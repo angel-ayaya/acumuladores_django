@@ -243,7 +243,7 @@ def qr_generator(pdf_filename, id_acumulador):
     qr_io.seek(0)  # Mover el cursor al inicio del archivo
 
     # Obtener o crear el objeto QR
-    qr_obj = QR.objects.get_or_create(ClaveAcumulador=id_acumulador)
+    qr_obj, created = QR.objects.get_or_create(ClaveAcumulador=id_acumulador)
  
     # Guardar el objeto File en el campo QR del modelo
     qr_obj.QR.save(f"{id_acumulador}.png", File(qr_io))
@@ -256,7 +256,8 @@ def generar_qr(pdf_filename, id_acumulador):
     """Generar un código QR y guardarlo en un objeto FileField"""
     try:
         qr_object = QR.objects.get(ClaveAcumulador=id_acumulador)
-        if qr_object:
+        # si existe el qr y el qr no es nulo
+        if qr_object and qr_object.QR  :
             print(qr_object.ClaveAcumulador)
         else:
             qr_generator(pdf_filename, id_acumulador)
