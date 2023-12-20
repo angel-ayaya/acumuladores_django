@@ -79,13 +79,14 @@
             {% for qr in codigos_qr %}
                 <div class="col">
                     <div class="card h-100 text-center">
-                        <a href="{{ qr.QR.url }}" target="_blank">
-                            <img src="{{ qr.QR.url }}" class="card-img-top img-fluid border-bottom border-2">
-                        </a>
-                        <div class="card-body">
-                            <h5 class="card-title">{{ qr.ClaveAcumulador }}</h5>
-                            <button type="button" class="btn btn-outline-dark" onclick="downloadImg('{{ qr.QR.url }}')">Descargar</button>
-                        </div>
+                        {% if qr.QR %}
+                            <a href="{{ qr.QR.url }}" target="_blank">
+                                <img src="{{ qr.QR.url }}" class="card-img-top img-fluid border-bottom border-2">
+                            </a>
+                            <!-- Resto del código de la tarjeta -->
+                        {% else %}
+                            <p>No hay archivo QR disponible</p>
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}
