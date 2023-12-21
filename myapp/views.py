@@ -33,6 +33,9 @@ def inicio(request):
 
     vehiculos = Vehiculo.objects.all()
 
+    # Aquí agregamos una consulta para obtener todos los QRs.
+    qrs = QR.objects.all()
+
     if search_term:
         if filter_type == 'placas':
             vehiculos = vehiculos.filter(Placas__icontains=search_term)
@@ -50,8 +53,9 @@ def inicio(request):
             pass
 
     ctx = {
-        'vehiculos': vehiculos
-        }
+        'vehiculos': vehiculos,
+        'qrs': qrs  # Agregamos los QRs al contexto.
+    }
 
     return render(request, "inicio.html", ctx)
 

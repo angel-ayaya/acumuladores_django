@@ -58,6 +58,8 @@
                                     <th>SerieChasis</th>
                                     <th>Area</th>
                                     <th>ClaveAcumulador</th>
+                                    <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -69,7 +71,20 @@
                                     <td>{{ vehiculo.SerieChasis }}</td>
                                     <td>{{ vehiculo.Area }}</td>
                                     <td>{{ vehiculo.ClaveAcumulador }}</td>
-                                    <td><a href="{% url 'inicio:editar_vehiculo' vehiculo.id %}" class="btn btn-primary">Editar</a></td>
+                                    <td>
+                                        <a href="{% url 'inicio:editar_vehiculo' vehiculo.id %}" class="btn btn-primary">Editar</a>
+                                    </td>
+                                    <td>
+                                        <!-- Recorrer los QRs para mostrar el botón de descarga -->
+                                        {% for qr in qrs %}
+                                            <!-- Si el QR pertenece al vehículo, mostrar el botón de descarga -->
+                                            {% if qr.ClaveAcumulador == vehiculo.ClaveAcumulador %}
+                                                <button type="button" class="btn btn-outline-dark" onclick="downloadImg('{{ qr.QR.url }}')">
+                                                    <i class="bi bi-download"></i>
+                                                </button>
+                                            {% endif %}
+                                        {% endfor %}  
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -78,9 +93,25 @@
                 </div>
             </div>
         </div>
+        
+
     </div>
 </div>
 
+<script>
+    function downloadImg(rutaImagen) {
+    // Crear un enlace temporal para la descarga
+   
+    var link = document.createElement("a");
+    link.href = "../" + rutaImagen;
+    link.download = rutaImagen;
 
+    // Simular un clic en el enlace para iniciar la descarga
+    document.body.appendChild(link);
+    link.click();
+    console.log(link);  
+    document.body.removeChild(link);
+}   
+</script>
 
 {% endblock %}
